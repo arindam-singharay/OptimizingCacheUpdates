@@ -1,0 +1,6 @@
+@WebApiAutoCacheUpdate_HostAddress = http://localhost:5042
+
+GET {{WebApiAutoCacheUpdate_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
