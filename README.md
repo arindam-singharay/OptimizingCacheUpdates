@@ -1,14 +1,41 @@
-Database Script
-This SQL script sets up the initial database schema and seed data for the Country table, and includes a trigger to notify the API when master data is updated.
-Features
-•	Creates the Country table with an auto-incrementing Id and a Name field.
-•	Inserts sample data for several countries.
-•	Defines a trigger (trgMasterDataUpdate) that calls a local API endpoint via curl whenever the Country table is updated.
-Usage
-1.	Run the script in your SQL Server Management Studio or preferred SQL tool to create the table and insert the data.
-2.	Ensure that the SQL Server instance has xp_cmdshell enabled for the trigger to work.
-3.	The trigger will POST to http://localhost:5000/api/cache/update after any update to the Country table, which is expected to notify your .NET 9 Web API to update its cache.
-Notes
-•	The trigger uses xp_cmdshell and curl. Make sure both are enabled and available on your SQL Server host.
-•	Adjust the API endpoint URL in the trigger if your API is hosted elsewhere or on a different port.
-•	Review security implications of enabling xp_cmdshell in production environments.
+# WebApiAutoCacheUpdate
+
+A .NET 9 Web API project that demonstrates automatic cache updates in response to changes in master data stored in a SQL Server database.
+
+## Features
+
+- **Country Master Table:**  
+  Stores country information in the database.
+- **Database Trigger:**  
+  A SQL Server trigger on the `Country` table calls a Web API endpoint whenever country data is updated, enabling automatic cache refresh.
+- **Cache Update Endpoint:**  
+  The API exposes an endpoint (`POST /api/masterdata/updatecache`) to handle cache update requests.
+
+## Project Structure
+
+- `Controllers/MasterDataController.cs`  
+  Handles cache update requests.
+- `Services/ICacheService.cs` and `Services/CacheService.cs`  
+  (If implemented) Define and implement caching logic.
+- `Database Scripts/DatabaseScript.sql`  
+  SQL script to create the `Country` table, insert sample data, and set up the trigger.
+
+## Getting Started
+
+### Prerequisites
+
+- .NET 9 SDK
+- SQL Server (with `xp_cmdshell` and `curl` enabled for trigger functionality)
+
+### Setup
+
+1. **Database Setup**
+   - Run `Database Scripts/DatabaseScript.sql` in your SQL Server instance to create the `Country` table, insert sample data, and set up the trigger.
+2. **API Setup**
+   - Build and run the Web API project.
+   - Ensure the API is accessible at `http://localhost:5000` (or update the trigger URL in the SQL script as needed).
+
+## How It Works
+
+- When the `Country` table is updated, the SQL trigger executes a `curl` command to call the API endpoint.
+- The API receives the request and updates its cache accordingly.
